@@ -1,0 +1,9 @@
+pandas
+matplotlib
+seaborn
+nltk
+torch
+transformers
+pytorch-lightning
+flask
+
