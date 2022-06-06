@@ -6,42 +6,46 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 import pytorch_lightning as pl
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 import numpy as np
 
 
-labels_to_idx = {'Positive': 0, 'Neutral': 1, 'Negative': 2, 'Irrelevant': 3}
+labels_to_idx = {'Positive': 0, 'Neutral': 1, 'Negative': 2}
 
 
 def load_data(path, column_names=None):
     df = pd.read_csv(path, encoding="ISO-8859-1", header=None)
     if column_names is not None:
         df.columns = column_names
-
     return df
 
-
-def preprocess(df, mode="train"):
+def preprocess(df):
+    df = df[df.sentiment != "Irrelevant"]
     df = df.dropna()
     nltk.download('wordnet')
     nltk.download('stopwords')
     nltk.download('omw-1.4')
     nltk.download('punkt')
+    lemmatizer = WordNetLemmatizer()
+    my_stopwords = df.source.unique()
+    my_stopwords = [s.lower() for s in my_stopwords] + ["http"]
+    stop_words = set(stopwords.words('english') + my_stopwords)
 
     for i, chat in zip(df.index, df["chat"]):
-        lemmatizer = WordNetLemmatizer()
-        stop_words = set(stopwords.words('english'))
 
         chat = re.sub(r'[\S]+\.(net|com|org|info|edu|gov|uk|de|ca|jp|fr|au|us|ru|ch|it|nel|se|no|es|mil)[\S]*\s?', '',
                       chat)
         chat = re.sub("[^a-zA-Z:;_\s)(]", "", chat)
         chat = word_tokenize(chat)
-        chat = [lemmatizer.lemmatize(i) for i in chat if i not in stop_words]
+        chat = [i
+                for i in chat
+                if (i.lower() not in stop_words)]
         chat = " ".join(chat) if len(chat) > 0 else np.nan
 
         df.loc[i, "chat"] = chat
 
     df = df.dropna()
+    df = df.drop_duplicates(subset=['chat'])
     df = df.replace({"sentiment": labels_to_idx})
     return df
 
@@ -66,19 +70,29 @@ class Sentiment_Dataloader(pl.LightningDataModule):
         self.max_len = max_len
         self.num_workers = num_workers
         self.tokenizer = tokenizer
+        self.train_srcs, self.val_srcs, self.test_srcs = [], [], []
         torch.manual_seed(0)
 
     def setup(self, stage=None):
         df = load_data(self.data_src_file, column_names=["user_id", "source", "sentiment", "chat"])
         df = preprocess(df)
 
-        df_train = df[df.source.isin(df.source.unique()[:24])][:500]
-        df_val = df[df.source.isin(df.source.unique()[24:28])][:100]
-        df_test = df[df.source.isin(df.source.unique()[28:])][:100]
+        self.train_srcs = df.source.unique()[:24]
+        self.val_srcs = df.source.unique()[24:28]
+        self.test_srcs = df.source.unique()[28:]
+        df_train = df[df.source.isin(self.train_srcs)]
+        df_val = df[df.source.isin(self.val_srcs)]
+        df_test = df[df.source.isin(self.test_srcs)]
+
+        df_train = df_train.sample(frac=1, random_state=1).reset_index() #[:5000]
+        df_val = df_val.sample(frac=1, random_state=1).reset_index() #[:1000]
+        df_test = df_test.sample(frac=1, random_state=1).reset_index() #[:1000]
 
         print("number of train, val, test samples", len(df_train), len(df_val), len(df_test))
 
-        self.train_dataset = ChatDataset(df_train["chat"].tolist(), df_train["sentiment"].tolist(), self.tokenizer,
+        self.train_dataset = ChatDataset(df_train["chat"].tolist(),
+                                         df_train["sentiment"].tolist(),
+                                         self.tokenizer,
                                          self.max_len)
         self.val_dataset = ChatDataset(df_val["chat"].tolist(), df_val["sentiment"].tolist(), self.tokenizer,
                                        self.max_len)

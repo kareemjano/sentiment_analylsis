@@ -5,23 +5,26 @@ import pytorch_lightning as pl
 from pytorch_lightning.loggers import TensorBoardLogger
 import logging
 import sys
+
 sys.path.append('src')
 
 from ..model import SentimentClassifier
 from ..dataset.sentiment_dataloader import Sentiment_Dataloader
+
 # from utils.visualization_tools import PlotCMs
 
 
 logger = logging.getLogger(__name__)
 
+
 def _get_callbacks():
     early_stop_callback = pl.callbacks.EarlyStopping(
-        monitor= "val_acc",
-        patience= 5,
-        min_delta= 0,
-        strict= True,
-        verbose= False,
-        mode = "max",
+        monitor="val_acc",
+        patience=5,
+        min_delta=0,
+        strict=True,
+        verbose=False,
+        mode="max",
     )
 
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
@@ -42,34 +45,44 @@ def _get_callbacks():
     ]
 
 
-def trainer(run_train=True, run_val=True, run_test=True, ckpt=None,
-            device="cuda"):
-    logger.info("Staring training...")
+def get_dataloader(data_src_file, max_encoding_len,
+                   batch_size=32, model_name='bert-base-cased'):
+    tokenizer = BertTokenizer.from_pretrained(model_name)
+    max_len = max_encoding_len
 
-    conf = {
-        "batch_size": 32,
-        "model_name": "bert-base-cased",
-        "max_input_len": 64,
-        "data_src_file": "build/datasets/labelled_text.csv",
-        "epochs": 10,
-        "lr": 2e-5,
-        "weight_decay": 1e-2,
-        "dropout_rate": 0.5,
-    }
-
-    epochs = conf["epochs"]
-
-    PRE_TRAINED_MODEL_NAME = conf["model_name"]
-    tokenizer = BertTokenizer.from_pretrained(PRE_TRAINED_MODEL_NAME)
-    max_len = conf["max_input_len"]
-
-    loader = Sentiment_Dataloader(batch_size=conf["batch_size"], data_src_file=conf["data_src_file"],
+    loader = Sentiment_Dataloader(batch_size=batch_size,
+                                  data_src_file=data_src_file,
                                   max_len=max_len, tokenizer=tokenizer)
     loader.setup()
+    return loader, tokenizer
+
+
+def trainer(conf, run_train=True, run_val=True, run_test=True, ckpt=None,
+            gpu=1):
+    logger.info("Staring training...")
+
+    # conf = {
+    #     "batch_size": 32,
+    #     "model_name": "bert-base-cased",
+    #     "max_input_len": 64,
+    #     "data_src_file": "build/datasets/labelled_text.csv",
+    #     "epochs": 10,
+    #     "lr": 2e-5,
+    #     "weight_decay": 1e-2,
+    #     "dropout_rate": 0.5,
+    # }
+
+    epochs = conf["epochs"]
+    max_len = conf["max_input_len"]
+    PRE_TRAINED_MODEL_NAME = conf["model_name"]
+
+    loader, tokenizer = get_dataloader(data_src_file=conf["data_src_file"],
+                   max_encoding_len=max_len,
+                   batch_size=conf["batch_size"],
+                   model_name=PRE_TRAINED_MODEL_NAME)
 
     callbacks = _get_callbacks()
-
-    model_conf = {"total_steps": len(loader.train_dataset)*epochs,
+    model_conf = {"total_steps": len(loader.train_dataset) * epochs,
                   "lr": conf["lr"],
                   "weight_decay": conf["weight_decay"],
                   "dropout_rate": conf["dropout_rate"],
@@ -88,9 +101,8 @@ def trainer(run_train=True, run_val=True, run_test=True, ckpt=None,
             flush_secs=30,
         )
 
-    gpu = 1 if device == "cuda" else 0
-    trainer = pl.Trainer( check_val_every_n_epoch= 1, fast_dev_run= False, max_epochs= epochs,
-        gpus= gpu, logger=stats_logger, callbacks=callbacks, gradient_clip_val=1)
+    trainer = pl.Trainer(check_val_every_n_epoch=1, fast_dev_run=False, max_epochs=epochs,
+                         gpus=gpu, logger=stats_logger, callbacks=callbacks, gradient_clip_val=1)
 
     if run_train:
         trainer.fit(model, loader)
@@ -112,6 +124,3 @@ def trainer(run_train=True, run_val=True, run_test=True, ckpt=None,
         # plotter.insert(cm_value, "Test CM")
 
     ## todo: save plots
-
-
-

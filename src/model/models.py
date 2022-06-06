@@ -8,7 +8,7 @@ class SentimentClassifier(ClassificationModule):
 
     def __init__(self, cfg):
         super().__init__(cfg)
-        self.n_classes = 4
+        self.n_classes = 3
         self.model = SentimentModel(self.n_classes,
                                     pre_trained_model_name=self.pre_trained_model_name,
                                     dropout=self.dropout_rate)

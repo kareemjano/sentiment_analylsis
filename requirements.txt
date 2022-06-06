@@ -6,4 +6,5 @@ torch
 transformers
 pytorch-lightning
 flask
+flask-selfdoc
 
