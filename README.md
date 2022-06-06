@@ -66,4 +66,4 @@ Then the image can be build and a container can be started:
 <h1>
 	Documentation
 </h1>
-![API Docs](./images/docs.png)
+![API Docs](images/docs.png)
