@@ -42,7 +42,7 @@ To test the model please run:
 
 `python trainer.py -tr False -c <checkpoint>`
 
-For example `python trainer.py -tr False -c build/models/Bert-epoch=01-val_acc=70.06.ckpt
+For example `python trainer.py -tr False -c build/models/Bert-epoch=01-val_acc=70.06.ckpt`
 
 This will run the model on both the val and test datasets
 
