@@ -1,5 +1,3 @@
-[TOC]
-
 # Sentiment Analysis
 
 A python API to detect sentiment from text using a Bert model trained on data collected from games chat messages.
