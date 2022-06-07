@@ -1,5 +1,5 @@
 from transformers import BertTokenizer
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer
 import os
 import numpy as np
 import pytorch_lightning as pl
@@ -11,8 +11,7 @@ sys.path.append('src')
 
 from ..model import SentimentClassifier
 from ..dataset.sentiment_dataloader import Sentiment_Dataloader
-
-# from utils.visualization_tools import PlotCMs
+from .utils import PlotCMs
 
 
 logger = logging.getLogger(__name__)
@@ -109,20 +108,22 @@ def trainer(conf, run_train=True, run_val=True, run_test=True, ckpt=None,
     if run_train:
         trainer.fit(model, loader)
 
-    # plotter = PlotCMs()
+    plotter = PlotCMs()
     if run_val:
         logger.info("Validating...")
         trainer.test(model, loader.val_dataloader())
         cm_value = np.round(model.cm.compute().cpu().numpy(), 3)
         print("Validation stats", str(cm_value))
-        # plotter.insert(cm_value, "Val CM")
-        # model.cm.reset()
+        plotter.insert(cm_value, "Val CM")
+        model.cm.reset()
 
     if run_test:
         logger.info("Testing...")
         trainer.test(model, loader.test_dataloader())
         cm_value = np.round(model.cm.compute().cpu().numpy(), 3)
         print("Testing stats", str(cm_value))
-        # plotter.insert(cm_value, "Test CM")
+        plotter.insert(cm_value, "Test CM")
 
-    ## todo: save plots
+    figures_pth = os.path.join("build", "figures")
+    os.makedirs(figures_pth, exist_ok=True)
+    plotter.plot(save_url=os.path.join(figures_pth, "cms.png"))

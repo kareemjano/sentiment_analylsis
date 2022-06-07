@@ -28,7 +28,7 @@ Note: You can use a pretrained model from [here](https://drive.google.com/file/d
 
 To train the model you can run the following command:
 
-`python trainer`.py
+`python trainer.py`
 
 You can also use Tensorboard to track the training:
 
