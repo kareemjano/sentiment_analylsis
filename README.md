@@ -6,7 +6,7 @@
 
 A python API to detect sentiment from text using a Bert model trained on data collected from games chat messages.
 
-A demo is available in `Demo.ipynb`.
+A demo is available in [Demo.ipynb](Demo.ipynb)
 
 ## Setup
 
@@ -28,7 +28,7 @@ The rest are used for training.
 
 ## Model Training
 
-Note: You can use a pretrained model from [here](https://drive.google.com/file/d/1EqW1jjdMRYPOvty8VF8J14avC-iAYAJ1/view?usp=sharing). Please place the file in `build/models`
+Note: You can use a pretrained model from [here](https://drive.google.com/file/d/1EqW1jjdMRYPOvty8VF8J14avC-iAYAJ1/view?usp=sharing). Please place the file in [build/models](build/models)
 
 To train the model you can run the following command:
 
