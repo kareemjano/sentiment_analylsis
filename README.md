@@ -6,6 +6,8 @@
 
 A python API to detect sentiment from text using a Bert model trained on data collected from games chat messages.
 
+A demo is available in `Demo.ipynb`.
+
 ## Setup
 
 To setup the project you first need to install the requirements:
@@ -48,7 +50,7 @@ This will run the model on both the val and test datasets
 
 ## Inference
 
-python infer.py -t "hello this is great" -c build/models/Bert-epoch=01-val_acc=70.06.ckpt
+`python infer.py -t "hello this is great" -c build/models/Bert-epoch=01-val_acc=70.06.ckpt`
 
 ## Running the Inference API
 
