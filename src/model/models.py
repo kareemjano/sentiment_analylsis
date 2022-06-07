@@ -1,5 +1,5 @@
 from torch import nn
-from transformers import BertModel
+from transformers import BertModel, AutoModel
 from .base import ClassificationModule
 from torchmetrics import ConfusionMatrix
 
@@ -19,7 +19,8 @@ class SentimentModel(nn.Module):
 
     def __init__(self, n_classes, pre_trained_model_name, dropout=0.3):
         super(SentimentModel, self).__init__()
-        self.bert = BertModel.from_pretrained(pre_trained_model_name)
+        # self.bert = BertModel.from_pretrained(pre_trained_model_name)
+        self.bert = AutoModel.from_pretrained(pre_trained_model_name)
         self.drop = nn.Dropout(p=dropout)
         self.out = nn.Linear(self.bert.config.hidden_size, n_classes)
 

@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from torch.optim import AdamW
+from torch.optim import AdamW, Adam
 from transformers import get_linear_schedule_with_warmup
 import pytorch_lightning as pl
 from abc import ABC

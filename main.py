@@ -23,7 +23,7 @@ def list_ckpts():
         Dict: containing available checkpoints {ckpts: ckpt_list}
     """
     ckpts = os.listdir(ckpts_path)
-    return jsonify({'ckpts': ckpts})
+    return jsonify({'ckpts': [ckpt for ckpt in ckpts if ".ckpt" in ckpt]})
 
 
 @app.route('/predict', methods=['POST'])

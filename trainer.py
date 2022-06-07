@@ -12,8 +12,8 @@ def get_parser():
 
     parser.add_argument('-e', '--epochs', type=int, default=10, help='max number of epochs')
     parser.add_argument('-b', '--batch_size', type=int, default=32, help='batch size')
-    parser.add_argument('-lr', '--learning_rate', type=float, default=2e-5, help='training rate')
-    parser.add_argument('-r', '--reg', type=float, default=1e-2, help='regularization')
+    parser.add_argument('-lr', '--learning_rate', type=float, default=1e-5, help='training rate') #8e-6
+    parser.add_argument('-r', '--reg', type=float, default=1e-2, help='regularization') #1e-6
     parser.add_argument('-d', '--dropout', type=float, default=0.3, help="dropout rate")
     parser.add_argument('-tr', '--run_train', type=str, default="True", help='run training')
     parser.add_argument('-v', '--run_val', type=str, default="True", help='run validation')

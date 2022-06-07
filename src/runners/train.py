@@ -1,4 +1,5 @@
 from transformers import BertTokenizer
+from transformers import AutoTokenizer, AutoModel
 import os
 import numpy as np
 import pytorch_lightning as pl
@@ -47,7 +48,8 @@ def _get_callbacks():
 
 def get_dataloader(data_src_file, max_encoding_len,
                    batch_size=32, model_name='bert-base-cased'):
-    tokenizer = BertTokenizer.from_pretrained(model_name)
+    # tokenizer = BertTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     max_len = max_encoding_len
 
     loader = Sentiment_Dataloader(batch_size=batch_size,

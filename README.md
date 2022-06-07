@@ -13,13 +13,11 @@ The dataset is collected from 32 different sources (games).
 
 The dataset is split to train, validation, and test datasets.
 
-The validation dataset is composed of samples from the following sources: ['TomClancysRainbowSix' 'Facebook' 'GrandTheftAuto(GTA)' 'MaddenNFL']
+The validation dataset is composed of samples from the following sources:['GrandTheftAuto(GTA)' 'MaddenNFL' 'johnson&johnson']
 
-The testing dataset is composed of samples from the following sources: ['johnson&johnson' 'Cyberpunk2077' 'TomClancysGhostRecon' 'Nvidia']
+The testing dataset is composed of samples from the following sources: ['Cyberpunk2077' 'TomClancysGhostRecon' 'Nvidia']
 
-The rest are used for training: 
-
-
+The rest are used for training.
 
 ## Model Training
 

@@ -2,7 +2,6 @@ import pandas as pd
 import re
 import nltk
 from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 import pytorch_lightning as pl
 import torch
@@ -26,21 +25,25 @@ def preprocess(df):
     nltk.download('stopwords')
     nltk.download('omw-1.4')
     nltk.download('punkt')
-    lemmatizer = WordNetLemmatizer()
+
     my_stopwords = df.source.unique()
     my_stopwords = [s.lower() for s in my_stopwords] + ["http"]
     stop_words = set(stopwords.words('english') + my_stopwords)
 
     for i, chat in zip(df.index, df["chat"]):
 
-        chat = re.sub(r'[\S]+\.(net|com|org|info|edu|gov|uk|de|ca|jp|fr|au|us|ru|ch|it|nel|se|no|es|mil)[\S]*\s?', '',
+        chat = re.sub(r'[\S]+\.(net|com|org|info|edu|gov|uk|de|ca|jp|fr|au|us|ru|ch|it|nel|se|no|es|mil)[\S]*\s?',
+                      '',
                       chat)
+
+        chat = re.sub('<.*?>', ' ', chat)
+
         chat = re.sub("[^a-zA-Z:;_\s)(]", "", chat)
         chat = word_tokenize(chat)
         chat = [i
                 for i in chat
                 if (i.lower() not in stop_words)]
-        chat = " ".join(chat) if len(chat) > 0 else np.nan
+        chat = " ".join(chat) if len(chat) > 1 else np.nan
 
         df.loc[i, "chat"] = chat
 
@@ -77,9 +80,9 @@ class Sentiment_Dataloader(pl.LightningDataModule):
         df = load_data(self.data_src_file, column_names=["user_id", "source", "sentiment", "chat"])
         df = preprocess(df)
 
-        self.train_srcs = df.source.unique()[:24]
-        self.val_srcs = df.source.unique()[24:28]
-        self.test_srcs = df.source.unique()[28:]
+        self.train_srcs = df.source.unique()[:26]
+        self.val_srcs = df.source.unique()[26:29]
+        self.test_srcs = df.source.unique()[29:]
         df_train = df[df.source.isin(self.train_srcs)]
         df_val = df[df.source.isin(self.val_srcs)]
         df_test = df[df.source.isin(self.test_srcs)]
