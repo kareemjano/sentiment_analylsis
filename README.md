@@ -1,4 +1,9 @@
+[TOC]
+
+
+
 # Sentiment Analysis
+
 A python API to detect sentiment from text using a Bert model trained on data collected from games chat messages.
 
 ## Setup
@@ -21,6 +26,8 @@ The rest are used for training.
 
 ## Model Training
 
+Note: You can use a pretrained model from [here](https://drive.google.com/file/d/1EqW1jjdMRYPOvty8VF8J14avC-iAYAJ1/view?usp=sharing). Please place the file in `build/models`
+
 To train the model you can run the following command:
 
 `python trainer`.py
@@ -35,13 +42,13 @@ To test the model please run:
 
 `python trainer.py -tr False -c <checkpoint>`
 
-For example `python trainer.py -tr False -c build/models/Bert-epoch=03-val_acc=51.88.ckpt`
+For example `python trainer.py -tr False -c build/models/Bert-epoch=01-val_acc=70.06.ckpt
 
 This will run the model on both the val and test datasets
 
 ## Inference
 
-python infer.py -t "hello this is great" -c build/models/Bert-epoch=02-val_acc=67.61.ckpt
+python infer.py -t "hello this is great" -c build/models/Bert-epoch=01-val_acc=70.06.ckpt
 
 ## Running the Inference API
 
