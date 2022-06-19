@@ -108,6 +108,10 @@ def trainer(conf, run_train=True, run_val=True, run_test=True, ckpt=None,
     if run_train:
         trainer.fit(model, loader)
 
+    model = SentimentClassifier.load_from_checkpoint(
+        callbacks[1].best_model_path
+    )
+
     plotter = PlotCMs()
     if run_val:
         logger.info("Validating...")

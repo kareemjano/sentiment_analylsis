@@ -2,7 +2,6 @@ import pandas as pd
 import re
 import nltk
 from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
 import pytorch_lightning as pl
 import torch
 from torch.utils.data import Dataset
@@ -22,13 +21,11 @@ def preprocess(df):
     df = df[df.sentiment != "Irrelevant"]
     df = df.dropna()
     nltk.download('wordnet')
-    nltk.download('stopwords')
     nltk.download('omw-1.4')
     nltk.download('punkt')
 
     my_stopwords = df.source.unique()
     my_stopwords = [s.lower() for s in my_stopwords] + ["http"]
-    stop_words = set(stopwords.words('english') + my_stopwords)
 
     for i, chat in zip(df.index, df["chat"]):
 
@@ -38,12 +35,12 @@ def preprocess(df):
 
         chat = re.sub('<.*?>', ' ', chat)
 
-        chat = re.sub("[^a-zA-Z:;_\s)(]", "", chat)
-        chat = word_tokenize(chat)
-        chat = [i
-                for i in chat
-                if (i.lower() not in stop_words)]
-        chat = " ".join(chat) if len(chat) > 1 else np.nan
+        chat = re.sub("[^a-zA-Z:;,.!?_\s)(]", "", chat)
+        tok_chat = word_tokenize(chat)
+        tok_chat = [i
+                for i in tok_chat
+                if (i.lower() not in my_stopwords)]
+        chat = chat if len(tok_chat) > 0 else np.nan
 
         df.loc[i, "chat"] = chat
 

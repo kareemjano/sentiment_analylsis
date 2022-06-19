@@ -14,9 +14,9 @@ training_data = os.path.join('build', 'datasets', 'labelled_text.csv')
 ckpts_path = os.path.join('build', 'models')
 
 
-@app.route('/list_ckpts', methods=['GET'])
+@app.route('/ckpts_list', methods=['GET'])
 @auto.doc()
-def list_ckpts():
+def ckpts_list():
     """
     Lists available checkpoints.
     Returns:
@@ -26,9 +26,9 @@ def list_ckpts():
     return jsonify({'ckpts': [ckpt for ckpt in ckpts if ".ckpt" in ckpt]})
 
 
-@app.route('/predict', methods=['POST'])
+@app.route('/prediction', methods=['POST'])
 @auto.doc()
-def predict():
+def prediction():
     """
     Predicts the sentiment of the given text.
     Args:

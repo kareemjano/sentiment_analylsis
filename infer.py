@@ -5,8 +5,8 @@ import argparse
 def get_parser():
     parser = argparse.ArgumentParser(
         prog='Sentiment Analysis Bert',
-        usage='python train.py',
-        description = "Train and evaluate a Bert model for sentiment analysis",
+        usage='python infer.py',
+        description = "Infer the sentiment given a model checkpoint and text.",
         add_help=True
     )
 

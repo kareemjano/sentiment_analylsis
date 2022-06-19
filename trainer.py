@@ -22,6 +22,7 @@ def get_parser():
     parser.add_argument('-gpu', '--gpu', type=int, default=1, help="gpus to use. 0 will run on cpu.")
     return parser
 
+
 def str2bool(v):
     if isinstance(v, bool):
         return v
@@ -31,6 +32,7 @@ def str2bool(v):
         return False
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
+
 
 if __name__ == '__main__':
     parser = get_parser().parse_args()

@@ -24,7 +24,7 @@ The rest are used for training.
 
 ## Model Training
 
-Note: You can use a pretrained model from [here](https://drive.google.com/file/d/1EqW1jjdMRYPOvty8VF8J14avC-iAYAJ1/view?usp=sharing). Please place the file in [build/models](build/models)
+Note: You can use a pretrained model from [here](https://drive.google.com/file/d/11LGlgx2zEqt8S0YvwXfWPS08l62J1NLh/view?usp=sharing). Please place the file in [build/models](build/models)
 
 To train the model you can run the following command:
 
